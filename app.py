@@ -1,14 +1,15 @@
 from flask import Flask, jsonify, render_template, request, url_for, flash, redirect
 from pymongo import MongoClient
 from data_generator import *
-from config import *
+import config
 from werkzeug.exceptions import abort
 
 
 app = Flask(__name__)
+app.secret_key = config.secret_key
 
 # MongoDB configuration
-mongo_uri = f"mongodb+srv://{DB_USER}:{DB_PASS}@lastfmclone.8ogsa.mongodb.net/"  # Replace with your MongoDB URI if hosted
+mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"  # Replace with your MongoDB URI if hosted
 client = MongoClient(mongo_uri)
 db = client["LastfmClone"]  # Database name
 collection = db["artists"]  # Collection name
@@ -22,9 +23,13 @@ def populate_data():
     # Insert data into MongoDB
     try:
         result = collection.insert_many(spotify_data)
-        return jsonify(f"Inserted {len(result.inserted_ids)} documents into MongoDB!")
+        flash(f"Inserted {len(result.inserted_ids)} documents into MongoDB!")
     except Exception as e:
-        return jsonify(f"Error inserting data: {e}")
+        flash(f"Error inserting data: {e}")
+        
+    message = request.args.get("msg")
+    
+    return render_template('index.html')
 
 # Route to retrieve data
 @app.route('/artists', methods=['GET'])
@@ -54,7 +59,7 @@ def create():
             "desription": artist_description,
             }
             result = collection.insert_one(artist)
-            return redirect(url_for('index'))
+            return redirect(url_for('index.html'))
 
     return render_template('create.html')
 
@@ -68,6 +73,11 @@ def dropdb():
         
     collection.delete_many({})
     
-    return redirect(url_for('index'))
+    flash("Deleted all documents of type artist.")
+    return render_template('index.html')
+
+@app.route('/login', methods=['GET'])
+def login():
+    pass
 
 

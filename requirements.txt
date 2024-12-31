@@ -2,3 +2,5 @@ flask
 pymongo 
 dnspython
 faker
+flask-bcrypt
+flask_login

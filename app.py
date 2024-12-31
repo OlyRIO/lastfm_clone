@@ -66,6 +66,8 @@ def dropdb():
     for _ in artists:
         data.append(_)
         
-    collection.delete_many(data)
+    collection.delete_many({})
+    
+    return redirect(url_for('index'))
 
 

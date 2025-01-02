@@ -48,6 +48,10 @@ def register():
         password = request.form["password"]
         confirmed_password = request.form["repeat-password"]
 
+        if username == "":
+            flash("Please enter a username.", "danger")
+            return redirect(url_for("register"))
+        
         if users_collection.find_one({"username": username}):
             flash("Username already exists!", "danger")
             return redirect(url_for("register"))
@@ -73,11 +77,17 @@ def register():
     
     return render_template("register.html")
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        
+        if (username == "" or password == ""):
+            flash("Please enter credentials.", "danger")
+            return redirect(url_for("login"))
+        
         user_data = users_collection.find_one({"username": username})
         
         if user_data and bcrypt.check_password_hash(user_data["password"], password):

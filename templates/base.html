@@ -15,7 +15,7 @@
             <nav class="navbar">
                 <div class="container">
                     <div id="navbarMenuHeroA" class="navbar-menu">
-                        <div class="navbar-end">
+                        <div class="navbar-start">
                             <a href="{{ url_for('index') }}" class="navbar-item">
                                 Home
                             </a>
@@ -31,12 +31,26 @@
                             <a href="{{ url_for('dropdb') }}" class="navbar-item">
                                 Drop DB
                             </a>
-                            <a href="{{ url_for('login') }}" class="navbar-item">
-                              Login
-                            </a>
-                            <a href="{{ url_for('register') }}" class="navbar-item">
-                              Register
-                            </a>
+                        </div>
+                        <div class="navbar-end">
+                            <div class="navbar-item">
+                                <div class="buttons">
+                                    {% if current_user.is_authenticated %}
+                                        <!-- Logout button for logged-in users -->
+                                        <a class="button is-danger" href="/logout">
+                                            Log out
+                                        </a>
+                                    {% else %}
+                                        <!-- Login and Register buttons for guests -->
+                                        <a class="button is-primary" href="/register">
+                                            <strong>Register</strong>
+                                        </a>
+                                        <a class="button is-light" href="/login">
+                                            Log in
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

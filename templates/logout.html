@@ -1,0 +1,20 @@
+<div class="navbar-item">
+    <div class="buttons">
+        {% if current_user.is_authenticated %}
+            <!-- Logout form for logged-in users -->
+            <form action="{{ url_for('auth.logout') }}" method="post">
+                <button type="submit" class="button is-danger">
+                    Log out
+                </button>
+            </form>
+        {% else %}
+            <!-- Login and Register buttons for guests -->
+            <a class="button is-primary" href="{{ url_for('auth.register') }}">
+                <strong>Register</strong>
+            </a>
+            <a class="button is-light" href="{{ url_for('auth.login') }}">
+                Log in
+            </a>
+        {% endif %}
+    </div>
+</div>

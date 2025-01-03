@@ -26,7 +26,7 @@
                                 Get Artists
                             </a>
                             <a href="{{ url_for('create') }}" class="navbar-item">
-                                Add artist
+                                Add Artist
                             </a>
                             <a href="{{ url_for('dropdb') }}" class="navbar-item">
                                 Drop DB
@@ -37,15 +37,15 @@
                                 <div class="buttons">
                                     {% if current_user.is_authenticated %}
                                         <!-- Logout button for logged-in users -->
-                                        <a class="button is-danger" href="/logout">
+                                        <a class="button is-danger" href="{{ url_for('auth.logout') }}">
                                             Log out
                                         </a>
                                     {% else %}
                                         <!-- Login and Register buttons for guests -->
-                                        <a class="button is-primary" href="/register">
+                                        <a class="button is-primary" href="{{ url_for('auth.register') }}">
                                             <strong>Register</strong>
                                         </a>
-                                        <a class="button is-light" href="/login">
+                                        <a class="button is-light" href="{{ url_for('auth.login') }}">
                                             Log in
                                         </a>
                                     {% endif %}
@@ -60,29 +60,33 @@
         {% block messages %}
         <div class="container">
             {% for message in get_flashed_messages() %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div class="notification is-warning">
+                <button class="delete"></button>
                 {{ message }}
             </div>
             {% endfor %}
         </div>
         {% endblock %}
+        
         <div class="hero-body">
-          <div class="container has-text-centered">
-             {% block content %}
-             {% endblock %}
-          </div>
-      </div>
-
+            <div class="container has-text-centered">
+                {% block content %}
+                {% endblock %}
+            </div>
+        </div>
     </section>
 
-<!-- jQuery (required for Bootstrap 4 and earlier) -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    <!-- Bulma JavaScript -->
+    <script>
+        document.querySelectorAll('.notification .delete').forEach(function (deleteButton) {
+            deleteButton.addEventListener('click', function () {
+                this.parentNode.remove();
+            });
+        });
+    </script>
 </body>
 
 </html>

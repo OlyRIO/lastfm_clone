@@ -14,11 +14,6 @@ app.secret_key = config.secret_key
 def make_session_permanent():
     session.permanent = True
 
-# Set session lifetime (e.g., 7 days)
-app.config.update(
-    PERMANENT_SESSION_LIFETIME=timedelta(days=7)
-)
-
 # MongoDB configuration
 mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
 client = MongoClient(mongo_uri)

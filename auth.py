@@ -1,8 +1,9 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from pymongo import MongoClient
 import config
+from datetime import timedelta
 
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 
@@ -19,15 +20,16 @@ users_collection = db["users"]
 
 # User class for Flask-Login
 class User(UserMixin):
-    def __init__(self, id, username):
+    def __init__(self, id, username, password):
         self.id = id
         self.username = username
+        self.password = password
 
     @staticmethod
     def get(user_id):
         user_data = users_collection.find_one({"_id": user_id})
         if user_data:
-            return User(str(user_data["_id"]), user_data["username"])
+            return User(user_data["_id"], user_data["username"], user_data["password"])
         return None
 
 @login_manager.user_loader
@@ -77,8 +79,12 @@ def login():
         # Check if the user exists and credentials are valid
         user_data = users_collection.find_one({"username": username})
         if user_data and bcrypt.check_password_hash(user_data["password"], password):
-            user = User(str(user_data["_id"]), user_data["username"])
-            login_user(user)
+            user = load_user(user_data['_id'])
+            # session['_id'] = user_data['_id']
+            # user = User(user_data['_id'], user_data['username'], user_data['password'])
+            session.clear()
+            login_user(user, remember=True, duration=timedelta(days=7), force=True)
+            session['username'] = user.username
             
             # Debug: print the session contents to check if it's properly set
             print(f"Session after login: {session}")  # Inspect session object
@@ -104,12 +110,19 @@ def logout():
 def dashboard():
     return f"Welcome {current_user.username}! <a href='{url_for('auth.logout')}'>Logout</a>"
 
+# @auth_blueprint.before_app_request
+# def load_logged_in_user():
+#     user_id = session.get('user_id')
 
+#     if user_id is None:
+#         g.user = None
+#     else:
+#         g.user = users_collection.find_one({"_id": user_id})
 
 @auth_blueprint.route("/check_login")
 def check_login():
-    if current_user.is_authenticated:
-        return f"User {current_user.username} is logged in."
+    if session['_id']:
+        return f"User {session['username']} is logged in."
     else:
         return "No user is logged in."
 

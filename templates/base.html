@@ -33,13 +33,14 @@
                             </a>
                         </div>
                         <div class="navbar-end">
-                            <div class="navbar-item">
                                 <div class="buttons">
                                     {% if current_user.is_authenticated %}
-                                        <!-- Logout button for logged-in users -->
-                                        <a class="button is-danger" href="{{ url_for('auth.logout') }}">
-                                            Log out
-                                        </a>
+                                    <!-- Greeting message for logged-in users -->
+                                    <span class="navbar-item">Hello, {{ current_user.username }}!</span>
+                                    <!-- Logout button for logged-in users -->
+                                    <a class="button is-danger" href="{{ url_for('auth.logout') }}">
+                                        Log out
+                                    </a>
                                     {% else %}
                                         <!-- Login and Register buttons for guests -->
                                         <a class="button is-primary" href="{{ url_for('auth.register') }}">

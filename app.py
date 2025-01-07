@@ -12,13 +12,6 @@ mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
-app.config['SESSION_TYPE'] = 'mongodb'
-app.config['SESSION_MONGODB'] = MongoClient(mongo_uri)
-app.config['SESSION_MONGODB_DB'] = 'LastfmClone'
-
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
 
 # MongoDB configuration
 
@@ -72,6 +65,47 @@ def dropdb():
     artist_collection.delete_many({})
     flash("Deleted all documents of type artist.", "info")
     return render_template('index.html')
+
+@app.route('/song/<song_id>')
+def song_detail(song_id):
+    # Fetch song data (e.g., title, length, listeners) from the database
+    song_data = {
+        "title": "The Prodigy - Breathe",
+        "listeners": "887.3K",
+        "scrobbles": "6M",
+        "length": "5:38",
+        "lyrics": "Come play my game, I'll test ya.",
+        "tags": ["electronic", "techno", "dance", "industrial", "big beat"],
+        "album": "The Fat of the Land - Expanded Edition",
+    }
+    return render_template('song_detail.html', **song_data)
+
+from flask import render_template
+
+@app.route('/album/<int:album_id>')
+def album_view(album_id):
+    # Example data for testing (replace with a database query)
+    album = {
+        "title": "The Fat of the Land",
+        "artist": "The Prodigy",
+        "cover_url": "https://example.com/album-cover.jpg",
+        "release_date": "1997-06-30",
+        "songs": [
+            {"title": "Smack My B**** Up", "duration": "5:43"},
+            {"title": "Breathe", "duration": "5:39"},
+            {"title": "Diesel Power", "duration": "4:17"},
+        ]
+    }
+    return render_template(
+        "album_detail.html",
+        album_title=album["title"],
+        artist_name=album["artist"],
+        album_cover_url=album["cover_url"],
+        release_date=album["release_date"],
+        songs=album["songs"]
+    )
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

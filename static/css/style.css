@@ -4,3 +4,86 @@ h1 {
     text-align: center;
     padding: 10px;
 }
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Upper Section Styling */
+.upper-section {
+    background-color: #4a403e;
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.upper-section h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.upper-section button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: white;
+    color: #4a403e;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Lower Section Styling */
+.lower-section {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 20px;
+}
+
+.song-details, .video-section {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.song-details h3 {
+    margin-top: 0;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tags span {
+    background-color: #ddd;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
+
+.video-section img {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.footer {
+    margin-top: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    color: #555;
+}

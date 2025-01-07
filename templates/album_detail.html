@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block custom_css %}
+<style>
+.album-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background:  #3b3b3b;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.album-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.album-cover {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.album-details {
+    flex: 1;
+}
+
+.album-title {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.album-artist, .album-release {
+    font-size: 1rem;
+    color: #666;
+}
+
+.songs-list {
+    margin-top: 20px;
+}
+
+.songs-list h2 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.song-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.song-item:last-child {
+    border-bottom: none;
+}
+
+.song-details {
+    display: flex;
+    align-items: center;
+}
+
+.song-number {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.song-title {
+    font-size: 1rem;
+}
+
+.song-metadata {
+    font-size: 0.9rem;
+    color: #666;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="album-container">
+    <!-- Album Header -->
+    <div class="album-header">
+        <img src="{{ album_cover_url }}" alt="Album Cover" class="album-cover">
+        <div class="album-details">
+            <h1 class="album-title">{{ album_title }}</h1>
+            <p class="album-artist">By {{ artist_name }}</p>
+            <p class="album-release">Released: {{ release_date }}</p>
+        </div>
+    </div>
+
+    <!-- Songs List -->
+    <div class="songs-list">
+        <h2>Tracks</h2>
+        <ul>
+            {% for song in songs %}
+            <li class="song-item">
+                <div class="song-details">
+                    <span class="song-number">{{ loop.index }}.</span>
+                    <span class="song-title">{{ song.title }}</span>
+                </div>
+                <div class="song-metadata">
+                    <span class="song-duration">{{ song.duration }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

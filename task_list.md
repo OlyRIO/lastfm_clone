@@ -3,7 +3,7 @@
 
 ## UI
 
-~~1. Logout botun funkcionalnost; dodati pozdrav za ulogiranog korisnika~~
+1. ~~Logout botun funkcionalnost; dodati pozdrav za ulogiranog korisnika~~
 
 ---*eventualno dodati profil korisnika i promijeni šifre i sranja
 
@@ -13,6 +13,6 @@
 
 4. ~~Base view za pojedinačnu pjesmu/artista/album i onda prigodna nasljeđivanja~~
 
-4. proširit signup/login sa usernameom i mailom 
+5. proširit signup/login sa usernameom i mailom 
 
 *--------uredit da dizajn sliči last.fm-u

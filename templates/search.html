@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{%  block custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}" />
+{% endblock %}
+
 {% block content %}
 <section class="section search-container">
     <div class="container">

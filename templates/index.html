@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block custom_css %}
+<style>
+    h1 {
+    text-align: center;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
     <h1>{% block title %} Welcome to LastFM Clone! {% endblock %}</h1>
 {% endblock %}

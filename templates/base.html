@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Auth Example</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}" />
+    {% block custom_css %}
+    <!-- Child templates can override or add custom styles here -->
+    {% endblock %}
 </head>
 
 <body>
@@ -51,14 +53,15 @@
                                     </div>
                                 </form>
                             </div>
-                            <div class="navbar-item">
                                 <div class="buttons">
                                     
                                     {% if current_user.is_authenticated %}
-                                        <!-- Logout button for logged-in users -->
-                                        <a class="button is-danger" href="{{ url_for('auth.logout') }}">
-                                            Log out
-                                        </a>
+                                    <!-- Greeting message for logged-in users -->
+                                    <span class="navbar-item">Hello, {{ current_user.username }}!</span>
+                                    <!-- Logout button for logged-in users -->
+                                    <a class="button is-danger" href="{{ url_for('auth.logout') }}">
+                                        Log out
+                                    </a>
                                     {% else %}
                                         <!-- Login and Register buttons for guests -->
                                         <a class="button is-primary" href="{{ url_for('auth.register') }}">
@@ -88,7 +91,7 @@
         {% endblock %}
         
         <div class="hero-body">
-            <div class="container has-text-centered">
+            <div class="container">
                 {% block content %}
                 {% endblock %}
             </div>

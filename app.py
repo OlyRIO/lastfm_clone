@@ -12,13 +12,6 @@ mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
-app.config['SESSION_TYPE'] = 'mongodb'
-app.config['SESSION_MONGODB'] = MongoClient(mongo_uri)
-app.config['SESSION_MONGODB_DB'] = 'LastfmClone'
-
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
 
 # MongoDB configuration
 

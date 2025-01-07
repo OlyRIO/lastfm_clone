@@ -1,0 +1,137 @@
+/* General styling for the search page */
+.search-container {
+    margin-top: 30px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the blocks */
+}
+
+/* Title and subtitle styling */
+.search-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #4a4a4a;
+    margin-bottom: 15px;
+}
+
+.search-subtitle {
+    font-size: 1.75rem;
+    font-weight: 500;
+    color: #4a4a4a;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+/* Styling for each result block (artist, album, song) */
+.result-block {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    padding: 15px; /* Reduced padding */
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    max-width: 600px; /* Set a max-width to make the blocks smaller */
+    width: 100%; /* Ensure it takes full width up to the max-width */
+}
+
+/* Hover effect on result block */
+.result-block:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Text inside result blocks */
+.result-block p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Styling for strong text in result blocks */
+.result-block p strong {
+    color: #333;
+}
+
+/* Styling for specific result categories */
+.artists, .albums, .songs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Artist specific styling */
+.artist-info {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.artist-info strong {
+    font-weight: 600;
+}
+
+/* Album specific styling */
+.album-info {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    color: #555;
+}
+
+.album-info em {
+    font-style: italic;
+    color: #007bff;
+}
+
+/* Song specific styling */
+.song-info {
+    font-size: 1.1rem;
+    margin-top: 10px;
+    color: #555;
+}
+
+.song-info em {
+    font-style: italic;
+    color: #007bff;
+}
+
+/* Styling for empty result sections */
+.no-results {
+    font-size: 1.2rem;
+    color: #888;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Increased font size for names (artists, albums, songs) */
+.result-block .name {
+    font-size: 1.5rem; /* Larger font for names */
+    font-weight: 700;  /* Bold for emphasis */
+    color: #333; /* Darker color for prominence */
+    margin-bottom: 10px; /* Add space below name */
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+    .search-container {
+        padding: 15px;
+    }
+
+    .search-title {
+        font-size: 2rem;
+    }
+
+    .search-subtitle {
+        font-size: 1.5rem;
+    }
+
+    .result-block {
+        padding: 15px;
+        max-width: 500px; /* Reduce max-width on smaller screens */
+    }
+
+    .result-block .name {
+        font-size: 1.3rem; /* Adjust name size for smaller screens */
+    }
+}

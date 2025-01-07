@@ -5,6 +5,8 @@ from data_generator import generate_spotify_data
 import config
 from auth import auth_blueprint, login_manager
 from datetime import timedelta
+from search import search_bp
+
 
 mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
 
@@ -19,6 +21,8 @@ artist_collection = db["artists"]
 
 # Register the authentication blueprint
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
+
+app.register_blueprint(search_bp)
 
 # Initialize Flask-Login
 login_manager.init_app(app)

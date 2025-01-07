@@ -1,10 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g, abort
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
-from pymongo import MongoClient
-import config
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from datetime import timedelta
 from bson import ObjectId
+from models.User import *
 
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 
@@ -12,36 +11,12 @@ auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
-
-
-# MongoDB configuration
-mongo_uri = config.mongo_uri
-client = MongoClient(mongo_uri)
-db = client[config.DB_NAME]
-users_collection = db["users"]
-
-# User class for Flask-Login
-class User(UserMixin):
-    def __init__(self, id, username, password):
-        self.id = id
-        self.username = username
-        self.password = password
-
-    @staticmethod
-    def get(user_id):
-        user_data = users_collection.find_one({"_id": user_id})
-        
-        if user_data:
-            return User(str(user_data["_id"]), user_data["username"], user_data["password"])
-        return None
-    
-    def get_id(self):
-        return self.id
         
     
 @login_manager.user_loader
 def load_user(user_id):
     user_data = users_collection.find_one({"_id": ObjectId(user_id)})
+    
     if user_data:
         return User(str(user_data['_id']), user_data['username'], user_data['password'])
     return None
@@ -126,15 +101,6 @@ def logout():
 @login_required
 def dashboard():
     return f"Welcome {current_user.username}! <a href='{url_for('auth.logout')}'>Logout</a>"
-
-# @auth_blueprint.before_app_request
-# def load_logged_in_user():
-#     user_id = session.get('user_id')
-
-#     if user_id is None:
-#         g.user = None
-#     else:
-#         g.user = users_collection.find_one({"_id": user_id})
 
 @auth_blueprint.route("/check_login")
 def check_login():

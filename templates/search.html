@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="section search-container">
+    <div class="container">
+        <h1 class="title search-title">Search Results</h1>
+        <p class="search-subtitle">Showing results for: <strong>{{ query }}</strong></p>
+
+        <!-- Sortiranje za Umjetnike -->
+        <h2 class="subtitle">Artists</h2>
+        <div class="field">
+            <label class="label">Sort by</label>
+            <div class="control">
+                <div class="select">
+                    <select id="sort_artists_select">
+                        <option value="asc" {% if sort_artists == 'asc' %}selected{% endif %}>A - Z</option>
+                        <option value="desc" {% if sort_artists == 'desc' %}selected{% endif %}>Z - A</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <button class="button is-info" onclick="applySort('artists')">
+                        Sort Artists
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% if artists %}
+            <div class="artists">
+                {% for artist in artists %}
+                    <div class="result-block">
+                        <p class="name"><strong>{{ artist.name }}</strong> </p>
+                        <p class="artist-info"><strong>Genre:</strong> {{ artist.genre }}</p>
+                        <p class="artist-info"><strong>Followers:</strong> {{ artist.followers }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-results">No artists found.</p>
+        {% endif %}
+
+        <!-- Sortiranje za Albumi -->
+        <h2 class="subtitle">Albums</h2>
+        <div class="field">
+            <label class="label">Sort by</label>
+            <div class="control">
+                <div class="select">
+                    <select id="sort_albums_select">
+                        <option value="asc" {% if sort_albums == 'asc' %}selected{% endif %}>A - Z</option>
+                        <option value="desc" {% if sort_albums == 'desc' %}selected{% endif %}>Z - A</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <button class="button is-info" onclick="applySort('albums')">
+                        Sort Albums
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% if albums %}
+            <div class="albums">
+                {% for album in albums %}
+                    <div class="result-block">
+                        <p class="name"><strong> {{ album.album.title }}</strong></p>
+                        <p class="album-info"><strong>Artist:</strong> {{ album.artist_name }}</p>
+                        <p class="album-info"><strong>Release Date:</strong> {{ album.album.release_date }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-results">No albums found.</p>
+        {% endif %}
+
+        <!-- Sortiranje za Pjesme -->
+        <h2 class="subtitle">Songs</h2>
+        <div class="field">
+            <label class="label">Sort by</label>
+            <div class="control">
+                <div class="select">
+                    <select id="sort_songs_select">
+                        <option value="asc" {% if sort_songs == 'asc' %}selected{% endif %}>A - Z</option>
+                        <option value="desc" {% if sort_songs == 'desc' %}selected{% endif %}>Z - A</option>
+                    </select>
+                </div>
+                <div class="control">
+                    <button class="button is-info" onclick="applySort('songs')">
+                        Sort Songs
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% if songs %}
+            <div class="songs">
+                {% for song in songs %}
+                    <div class="result-block">
+                        <p class="name"><strong>{{ song.song.title }}</strong> </p>
+                        <p class="song-info"><strong>Duration:</strong> {{ song.song.duration // 60 }}:{{ song.song.duration % 60 }} mins</p>
+                        <p class="song-info"><strong>Album:</strong> {{ song.album_title }}</p>
+                        <p class="song-info"><strong>Artist:</strong> {{ song.artist_name }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-results">No songs found.</p>
+        {% endif %}
+    </div>
+</section>
+
+<script>
+    function applySort(type) {
+        const query = '{{ query }}'; // Preuzmi trenutni upit
+        let sort_artists = document.getElementById('sort_artists_select').value;
+        let sort_albums = document.getElementById('sort_albums_select').value;
+        let sort_songs = document.getElementById('sort_songs_select').value;
+
+        // Provjeri koji je tip sortiranja i ažuriraj URL
+        if (type === 'artists') {
+            window.location.href = '/search?q=' + query + '&sort_artists=' + sort_artists + '&sort_albums=' + sort_albums + '&sort_songs=' + sort_songs;
+        } else if (type === 'albums') {
+            window.location.href = '/search?q=' + query + '&sort_artists=' + sort_artists + '&sort_albums=' + sort_albums + '&sort_songs=' + sort_songs;
+        } else if (type === 'songs') {
+            window.location.href = '/search?q=' + query + '&sort_artists=' + sort_artists + '&sort_albums=' + sort_albums + '&sort_songs=' + sort_songs;
+        }
+    }
+</script>
+{% endblock %}

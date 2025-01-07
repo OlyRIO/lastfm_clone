@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block custom_css %}
+<style>
+.artist-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background:  #3b3b3b;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.artist-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.artist-cover {
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    margin-right: 20px;
+}
+
+.artist-details {
+    flex: 1;
+}
+
+.artist-title {
+    font-size: 2rem;
+    margin: 0;
+}
+
+.artist-artist, .artist-release {
+    font-size: 1rem;
+    color: #666;
+}
+
+.item-list {
+    margin-top: 20px;
+}
+
+.item-list h2 {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.song-details {
+    display: flex;
+    align-items: center;
+}
+
+.song-number {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.song-title {
+    font-size: 1rem;
+}
+
+.song-metadata {
+    font-size: 0.9rem;
+    color: #666;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="artist-container">
+    <!-- artist Header -->
+    <div class="artist-header">
+        <img src="{{ artist_cover_url }}" alt="artist Cover" class="artist-cover">
+        <div class="artist-details">
+            <h1 class="artist-name">{{ artist_name }}</h1>
+        </div>
+    </div>
+
+    <!-- Album List -->
+    <div class="item-list">
+        <h2>Albums</h2>
+        <ul>
+            {% for album in albums %}
+            <li class="item">
+                <div class="album-details">
+                    <span class="album-number">{{ loop.index }}.</span>
+                    <span class="album-title">{{ album.title }}</span>
+                </div>
+                <div class="album-metadata">
+                    <span class="album-release-date">{{ album.release_date }}</span>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Songs List -->
+    <div class="item-list">
+        <h2>Tracks</h2>
+        <ul>
+            {% for album in albums %}
+                {% for song in album.songs %}
+                <li class="item">
+                    <div class="song-details">
+                        <span class="song-number">{{ loop.index }}.</span>
+                        <span class="song-title">{{ song.title }}</span>
+                    </div>
+                    <div class="song-metadata">
+                        <span class="song-duration">{{ song.duration }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            {% endfor %}
+            
+        </ul>
+    </div>
+</div>
+{% endblock %}

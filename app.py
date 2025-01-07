@@ -82,7 +82,7 @@ def song_detail(song_id):
 
 from flask import render_template
 
-@app.route('/album/<int:album_id>')
+@app.route('/album/<album_id>')
 def album_view(album_id):
     # Example data for testing (replace with a database query)
     album = {
@@ -103,6 +103,41 @@ def album_view(album_id):
         album_cover_url=album["cover_url"],
         release_date=album["release_date"],
         songs=album["songs"]
+    )
+    
+@app.route('/artist/<artist_id>')
+def artist_view(artist_id):
+    # Example data for testing (replace with a database query)
+    artist = {
+        "name": "Sean Paul",
+        "albums": [
+            {
+                "title": "The Trinity",
+                "cover_url": "https://example.com/album-cover.jpg",
+                "release_date": "1997-06-30",
+                "songs": [
+                    {"title": "Fire Links Intro", "duration": "5:43"},
+                    {"title": "Head in the Zone", "duration": "5:39"},
+                    {"title": "We Be Burnin'", "duration": "4:17"},
+                ]
+            },
+            {
+                "title": "Dutty Rock",
+                "cover_url": "https://example.com/album-cover.jpg",
+                "release_date": "2002-11-12",
+                "songs": [
+                    {"title": "Dutty Rock Intro", "duration": "5:43"},
+                    {"title": "Shout (Street Respect)", "duration": "5:39"},
+                    {"title": "Gimme the Light", "duration": "4:17"},
+                ]
+            },
+        ],
+        
+    }
+    return render_template(
+        "artist_detail.html",
+        artist_name=artist["name"],
+        albums=artist["albums"],
     )
 
 

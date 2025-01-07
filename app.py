@@ -6,16 +6,20 @@ import config
 from auth import auth_blueprint, login_manager
 from datetime import timedelta
 
+mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
 
 app = Flask(__name__)
 app.secret_key = config.secret_key
+app.config['SESSION_TYPE'] = 'mongodb'
+app.config['SESSION_MONGODB'] = MongoClient(mongo_uri)
+app.config['SESSION_MONGODB_DB'] = 'LastfmClone'
 
 @app.before_request
 def make_session_permanent():
     session.permanent = True
 
 # MongoDB configuration
-mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
+
 client = MongoClient(mongo_uri)
 db = client["LastfmClone"]
 artist_collection = db["artists"]
@@ -71,5 +75,6 @@ if __name__ == "__main__":
 app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',  # or 'None' for production
     SESSION_COOKIE_SECURE=False,    # False for local development (without HTTPS)
-    PERMANENT_SESSION_LIFETIME=timedelta(days=7)  # Set the session lifetime to 7 days
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),  # Set the session lifetime to 7 days
+    REMEMBER_COOKIE_REFRESH_EACH_REQUEST=False
 )

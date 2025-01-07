@@ -1,9 +1,10 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session, g, abort
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from pymongo import MongoClient
 import config
 from datetime import timedelta
+from bson import ObjectId
 
 auth_blueprint = Blueprint('auth', __name__, template_folder='templates')
 
@@ -12,10 +13,11 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 
+
 # MongoDB configuration
-mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
+mongo_uri = config.mongo_uri
 client = MongoClient(mongo_uri)
-db = client["LastfmClone"]
+db = client[config.DB_NAME]
 users_collection = db["users"]
 
 # User class for Flask-Login
@@ -28,13 +30,22 @@ class User(UserMixin):
     @staticmethod
     def get(user_id):
         user_data = users_collection.find_one({"_id": user_id})
+        
         if user_data:
-            return User(user_data["_id"], user_data["username"], user_data["password"])
+            return User(str(user_data["_id"]), user_data["username"], user_data["password"])
         return None
-
+    
+    def get_id(self):
+        return self.id
+        
+    
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    user_data = users_collection.find_one({"_id": ObjectId(user_id)})
+    if user_data:
+        return User(str(user_data['_id']), user_data['username'], user_data['password'])
+    return None
+
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
@@ -78,18 +89,32 @@ def login():
         
         # Check if the user exists and credentials are valid
         user_data = users_collection.find_one({"username": username})
+        print(user_data)
         if user_data and bcrypt.check_password_hash(user_data["password"], password):
-            user = load_user(user_data['_id'])
-            # session['_id'] = user_data['_id']
-            # user = User(user_data['_id'], user_data['username'], user_data['password'])
-            session.clear()
-            login_user(user, remember=True, duration=timedelta(days=7), force=True)
-            session['username'] = user.username
+            # session.clear()
+            user = User(str(user_data['_id']), user_data['username'], user_data['password'])
+            print(f'User id is {user.id}')
+            result = login_user(user, remember=True, duration=timedelta(days=7), force=True)
+            session.modified = True
+            print(f'Is user authenticated in login function: {current_user.is_authenticated}')
+            # print(f'Current user type is {type(current_user.is_authenticated)}')
+            if result:
+                print("Loggin successful!")
+                #print(f"Session after login: {session}")  # Inspect session object
+                flash("Login successful!", "success")
+                return redirect(url_for("index"))
+            else:
+                print("Something went wrong :(")
+                
+                return redirect(url_for("auth.login"))
+            # session['username'] = user.username
             
-            # Debug: print the session contents to check if it's properly set
-            print(f"Session after login: {session}")  # Inspect session object
-            flash("Login successful!", "success")
-            return redirect(url_for("index"))
+           
+            
+            # if not helpers.url_has_allowed_host_and_scheme(next, request.host):
+            #     return abort(400)
+            
+            
         else:
             flash("Invalid credentials!", "danger")
     
@@ -121,8 +146,14 @@ def dashboard():
 
 @auth_blueprint.route("/check_login")
 def check_login():
-    if session['_id']:
-        return f"User {session['username']} is logged in."
+    print(f'Is user authenticated in check_login function: {current_user._get_current_object().is_authenticated}')
+    print(type(current_user._get_current_object()))
+    if current_user._get_current_object().is_authenticated:
+        return f"User {current_user.username} is logged in."
     else:
-        return "No user is logged in."
+         return "No user is logged in."
+    # if session['_id']:
+    #     return f"User {session['username']} is logged in."
+    # else:
+    #     return "No user is logged in."
 

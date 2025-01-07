@@ -86,14 +86,16 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        remember_me = request.form.getlist("remember").__contains__('on')
+        print(remember_me)
         
         # Check if the user exists and credentials are valid
         user_data = users_collection.find_one({"username": username})
         if user_data and bcrypt.check_password_hash(user_data["password"], password):
 
             user = User(str(user_data['_id']), user_data['username'], user_data['password'])
-            result = login_user(user, remember=True, duration=timedelta(days=7), force=True)
-            session.modified = True
+            result = login_user(user, remember=remember_me, duration=timedelta(days=7), force=True)
+            
 
             if result:
                 flash("Login successful!", "success")
@@ -113,13 +115,12 @@ def login():
 
 
 
-@auth_blueprint.route("/logout", methods=["POST"])
+@auth_blueprint.route("/logout", methods=["GET"])
 @login_required
 def logout():
-    """Log out the user and redirect to the login page."""
     logout_user()  # Logs out the current user
     flash("You have been logged out!", "info")  # Display a message
-    return redirect(url_for("auth.login"))  # Redirect to the login page
+    return redirect(url_for("index"))  # Redirect to the login page
 
 @auth_blueprint.route("/dashboard")
 @login_required

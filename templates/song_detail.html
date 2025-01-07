@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block custom_css %}
+<style>
+    .song-header {
+        background-color: #3b3b3b;
+        color: white;
+        padding: 20px;
+    }
+
+    .song-header .title {
+        margin-bottom: 20px; /* Adds space below the title */
+        
+    }
+
+    .song-header .subtitle {
+        margin-top: 0; /* Ensures no extra space above the subtitle */
+        font-size: 1.2rem;
+        color: #bfbfbf;
+    }
+
+    .song-header .buttons {
+        margin-top: 15px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="song-header">
+    <h1 class="title">{{ title }}</h1>
+    <p class="subtitle">
+        Listeners: {{ listeners }} | Scrobbles: {{ scrobbles }}
+    </p>
+    <div class="buttons">
+        <a class="button is-primary">Play Track</a>
+        <a class="button is-light">Add to Playlist</a>
+    </div>
+</div>
+
+<div class="content">
+    <h2>About This Song</h2>
+    <p><strong>Length:</strong> {{ length }}</p>
+    <p><strong>Lyrics:</strong> {{ lyrics }}</p>
+
+    <div class="tags">
+        {% for tag in tags %}
+            <span class="tag is-primary">{{ tag }}</span>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

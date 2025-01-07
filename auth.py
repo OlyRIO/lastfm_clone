@@ -89,31 +89,22 @@ def login():
         
         # Check if the user exists and credentials are valid
         user_data = users_collection.find_one({"username": username})
-        print(user_data)
         if user_data and bcrypt.check_password_hash(user_data["password"], password):
-            # session.clear()
+
             user = User(str(user_data['_id']), user_data['username'], user_data['password'])
-            print(f'User id is {user.id}')
             result = login_user(user, remember=True, duration=timedelta(days=7), force=True)
             session.modified = True
-            print(f'Is user authenticated in login function: {current_user.is_authenticated}')
-            # print(f'Current user type is {type(current_user.is_authenticated)}')
+
             if result:
-                print("Loggin successful!")
-                #print(f"Session after login: {session}")  # Inspect session object
                 flash("Login successful!", "success")
                 return redirect(url_for("index"))
             else:
                 print("Something went wrong :(")
                 
                 return redirect(url_for("auth.login"))
-            # session['username'] = user.username
-            
-           
             
             # if not helpers.url_has_allowed_host_and_scheme(next, request.host):
             #     return abort(400)
-            
             
         else:
             flash("Invalid credentials!", "danger")
@@ -152,8 +143,4 @@ def check_login():
         return f"User {current_user.username} is logged in."
     else:
          return "No user is logged in."
-    # if session['_id']:
-    #     return f"User {session['username']} is logged in."
-    # else:
-    #     return "No user is logged in."
 

@@ -1,4 +1,5 @@
 from db_helper import *
+from bson import ObjectId
 
 # User class for Flask-Login
 class Album():
@@ -9,10 +10,10 @@ class Album():
         self.songs = songs
 
     @staticmethod
-    def find_album(album_id):
+    def get(album_id):
         # Query to find the artist that has the album with the specified album_id
         artist_data = artists_collection.find_one(
-            {"albums.album_id": album_id},  # Search for album_id in the albums array
+            {"albums.id": album_id},  # Search for album_id in the albums array
             {"name": 1, "albums.$": 1}      # Project only the artist's name and the matched album
         )
         

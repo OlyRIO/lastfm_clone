@@ -29,7 +29,7 @@
 <div class="song-header">
     <h1 class="title">{{ title }}</h1>
     <p class="subtitle">
-        Listeners: {{ listeners }} | Scrobbles: {{ scrobbles }}
+        By: {{ artist }} | Scrobbles: {{ scrobbles }}
     </p>
     <div class="buttons">
         <a class="button is-primary">Play Track</a>
@@ -39,8 +39,7 @@
 
 <div class="content">
     <h2>About This Song</h2>
-    <p><strong>Length:</strong> {{ length }}</p>
-    <p><strong>Lyrics:</strong> {{ lyrics }}</p>
+    <p><strong>Duration:</strong> {{ duration }}</p>
 
     <div class="tags">
         {% for tag in tags %}

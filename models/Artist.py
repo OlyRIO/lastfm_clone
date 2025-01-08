@@ -1,4 +1,5 @@
 from db_helper import *
+from bson import ObjectId
 
 # User class for Flask-Login
 class Artist():
@@ -11,11 +12,11 @@ class Artist():
 
     @staticmethod
     def get(user_id):
-        artist_data = artists_collection.find_one({"_id": user_id})
+        artist_data = artists_collection.find_one({"id": user_id})
         
         if artist_data:
             return Artist(
-                str(artist_data["_id"]),
+                artist_data["id"],
                 artist_data["name"],
                 artist_data["genre"],
                 artist_data["followers"],

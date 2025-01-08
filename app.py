@@ -7,6 +7,9 @@ from auth import auth_blueprint, login_manager
 from datetime import timedelta
 from search import search_bp
 from bson import ObjectId
+from models.Artist import Artist
+from models.Album import Album
+from models.Song import Song
 
 
 mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
@@ -63,39 +66,30 @@ def dropdb():
 
 @app.route('/song/<song_id>')
 def song_detail(song_id):
-    # Fetch song data (e.g., title, length, listeners) from the database
-    song_data = {
-        "title": "The Prodigy - Breathe",
-        "listeners": "887.3K",
-        "scrobbles": "6M",
-        "length": "5:38",
-        "lyrics": "Come play my game, I'll test ya.",
-        "tags": ["electronic", "techno", "dance", "industrial", "big beat"],
-        "album": "The Fat of the Land - Expanded Edition",
-    }
-    return render_template('song_detail.html', **song_data)
+    
+    song_data = Song.get(song_id)
+    song = song_data["song"]
+    
+    return render_template('song_detail.html', 
+                           artist = song_data["artist"],
+                           album = song_data["album"],
+                           scrobbles = song["scrobbles"],
+                           duration = song["duration"],
+                        
+                           )
 
 from flask import render_template
 
 @app.route('/album/<album_id>')
 def album_view(album_id):
     # Example data for testing (replace with a database query)
-    album = {
-        "title": "The Fat of the Land",
-        "artist": "The Prodigy",
-        "cover_url": "https://example.com/album-cover.jpg",
-        "release_date": "1997-06-30",
-        "songs": [
-            {"title": "Smack My B**** Up", "duration": "5:43"},
-            {"title": "Breathe", "duration": "5:39"},
-            {"title": "Diesel Power", "duration": "4:17"},
-        ]
-    }
+    album_data = Album.get(album_id)
+    album = album_data["album"]
+
     return render_template(
         "album_detail.html",
         album_title=album["title"],
-        artist_name=album["artist"],
-        album_cover_url=album["cover_url"],
+        artist_name= album_data["artist"],
         release_date=album["release_date"],
         songs=album["songs"]
     )
@@ -103,42 +97,12 @@ def album_view(album_id):
 @app.route('/artist/<artist_id>')
 def artist_view(artist_id):
     # Example data for testing (replace with a database query)
-    artist = artists_collection.find({"_id": ObjectId(artist_id)})
-    print(type(artist))
-    print(artist)
-    
-    return render_template("index.html")
-    # artist = {
-    #     "name": "Sean Paul",
-    #     "albums": [
-    #         {
-    #             "title": "The Trinity",
-    #             "cover_url": "https://example.com/album-cover.jpg",
-    #             "release_date": "1997-06-30",
-    #             "songs": [
-    #                 {"title": "Fire Links Intro", "duration": "5:43"},
-    #                 {"title": "Head in the Zone", "duration": "5:39"},
-    #                 {"title": "We Be Burnin'", "duration": "4:17"},
-    #             ]
-    #         },
-    #         {
-    #             "title": "Dutty Rock",
-    #             "cover_url": "https://example.com/album-cover.jpg",
-    #             "release_date": "2002-11-12",
-    #             "songs": [
-    #                 {"title": "Dutty Rock Intro", "duration": "5:43"},
-    #                 {"title": "Shout (Street Respect)", "duration": "5:39"},
-    #                 {"title": "Gimme the Light", "duration": "4:17"},
-    #             ]
-    #         },
-    #     ],
-        
-    # }
+    artist = Artist.get(artist_id)
     
     return render_template(
         "artist_detail.html",
-        artist_name=artist["name"],
-        albums=artist["albums"],
+        artist_name=artist.name,
+        albums=artist.albums,
     )
 
 

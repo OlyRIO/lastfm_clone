@@ -31,11 +31,13 @@
         {% if artists %}
             <div class="artists">
                 {% for artist in artists %}
+                <a href="/artist/{{ artist.id }}" class="result-link">
                     <div class="result-block">
-                        <p class="name"><strong>{{ artist.name }}</strong> </p>
+                        <p class="name"><strong>{{ artist.name }}</strong></p>
                         <p class="artist-info"><strong>Genre:</strong> {{ artist.genre }}</p>
                         <p class="artist-info"><strong>Followers:</strong> {{ artist.followers }}</p>
                     </div>
+                </a>
                 {% endfor %}
             </div>
         {% else %}
@@ -63,11 +65,13 @@
         {% if albums %}
             <div class="albums">
                 {% for album in albums %}
+                <a href="/album/{{album.album.id}}" class="result-link">
                     <div class="result-block">
                         <p class="name"><strong> {{ album.album.title }}</strong></p>
                         <p class="album-info"><strong>Artist:</strong> {{ album.artist_name }}</p>
                         <p class="album-info"><strong>Release Date:</strong> {{ album.album.release_date }}</p>
                     </div>
+                </a>
                 {% endfor %}
             </div>
         {% else %}
@@ -95,12 +99,14 @@
         {% if songs %}
             <div class="songs">
                 {% for song in songs %}
+                <a href="/song/{{song.song.id}}" class="result-link">
                     <div class="result-block">
                         <p class="name"><strong>{{ song.song.title }}</strong> </p>
                         <p class="song-info"><strong>Duration:</strong> {{ song.song.duration // 60 }}:{{ song.song.duration % 60 }} mins</p>
                         <p class="song-info"><strong>Album:</strong> {{ song.album_title }}</p>
                         <p class="song-info"><strong>Artist:</strong> {{ song.artist_name }}</p>
                     </div>
+                </a>
                 {% endfor %}
             </div>
         {% else %}

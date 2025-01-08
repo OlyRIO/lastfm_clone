@@ -104,7 +104,9 @@ ul {
             <li class="item">
                 <div class="album-details">
                     <span class="album-number">{{ loop.index }}.</span>
-                    <span class="album-title">{{ album.title }}</span>
+                    <a href="/album/{{album.id}}">
+                        <span class="album-title">{{ album.title }}</span>
+                    </a>
                 </div>
                 <div class="album-metadata">
                     <span class="album-release-date">{{ album.release_date }}</span>
@@ -123,7 +125,9 @@ ul {
                 <li class="item">
                     <div class="song-details">
                         <span class="song-number">{{ loop.index }}.</span>
-                        <span class="song-title">{{ song.title }}</span>
+                        <a href="/song/{{song.id}}">
+                            <span class="song-title">{{ song.title }}</span>
+                        </a>
                     </div>
                     <div class="song-metadata">
                         <span class="song-duration">{{ song.duration }}</span>

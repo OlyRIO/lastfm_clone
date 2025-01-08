@@ -106,7 +106,9 @@ ul {
             <li class="song-item">
                 <div class="song-details">
                     <span class="song-number">{{ loop.index }}.</span>
-                    <span class="song-title">{{ song.title }}</span>
+                    <a href="/song/{{song.id}}" class="result-link">
+                        <span class="song-title">{{ song.title }}</span>
+                    </a>
                 </div>
                 <div class="song-metadata">
                     <span class="song-duration">{{ song.duration }}</span>

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template
 from pymongo import MongoClient
 import config 
+import pprint
 
 search_bp = Blueprint('search', __name__, template_folder='templates')
 
@@ -31,26 +32,42 @@ def search():
 
     # Sortiranje albuma
     album_results = list(db.artists.aggregate([
-        {"$unwind": "$albums"},
-        {"$match": {"albums.title": {"$regex": query, "$options": "i"}}},
-        {"$sort": {"albums.title": sort_albums}},
-        {"$project": {"_id": 0, "artist_name": "$name", "album": "$albums"}}
-    ]))
-
-    # Sortiranje pjesama
-    song_results = list(db.artists.aggregate([
-        {"$unwind": "$albums"},
-        {"$unwind": "$albums.songs"},
-        {"$match": {"albums.songs.title": {"$regex": query, "$options": "i"}}},
-        {"$sort": {"albums.songs.title": sort_songs}},
-        {"$project": {
-            "_id": 0,
-            "artist_name": "$name",
-            "album_title": "$albums.title",
-            "song": "$albums.songs"
+    {"$unwind": "$albums"},
+    {"$match": {"albums.title": {"$regex": query, "$options": "i"}}},
+    {"$sort": {"albums.title": sort_albums}},
+    {"$project": {
+        "_id": 0,
+        "artist_name": "$name",
+        "album": {
+            "id": "$albums.id",  # Explicitly include `id`
+            "title": "$albums.title",
+            "release_date": "$albums.release_date"
+            }
         }}
     ]))
 
+
+    # Sortiranje pjesama
+    song_results = list(db.artists.aggregate([
+    {"$unwind": "$albums"},
+    {"$unwind": "$albums.songs"},
+    {"$match": {"albums.songs.title": {"$regex": query, "$options": "i"}}},
+    {"$sort": {"albums.songs.title": sort_songs}},
+    {"$project": {
+        "_id": 0,
+        "artist_name": "$name",
+        "album_title": "$albums.title",
+        "song": {
+            "id": "$albums.songs.id",  # Explicitly include `id` here
+            "title": "$albums.songs.title",
+            "duration": "$albums.songs.duration"
+            }
+        }}
+    ]))
+
+    pprint.pp(album_results)
+    pprint.pp(song_results)
+    
     return render_template(
         'search.html',
         artists=artist_results,

@@ -108,7 +108,7 @@ def artist_view(artist_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80, debug=True)
     
 app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',  # or 'None' for production

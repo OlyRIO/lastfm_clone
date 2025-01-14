@@ -9,12 +9,11 @@
     }
 
     .song-header .title {
-        margin-bottom: 20px; /* Adds space below the title */
-        
+        margin-bottom: 20px;
     }
 
     .song-header .subtitle {
-        margin-top: 0; /* Ensures no extra space above the subtitle */
+        margin-top: 0;
         font-size: 1.2rem;
         color: #bfbfbf;
     }
@@ -27,13 +26,15 @@
 
 {% block content %}
 <div class="song-header">
-    <h1 class="title">{{ title }}</h1>
+    <h1 class="title">{{ song.title }}</h1>
     <p class="subtitle">
-        By: {{ artist }} | Scrobbles: {{ scrobbles }}
+        By: {{ artist.name }} | Scrobbles: {{ scrobbles }}
     </p>
     <div class="buttons">
-        <a class="button is-primary">Play Track</a>
-        <a class="button is-light">Add to Playlist</a>
+        {% if current_user.is_authenticated %}
+            <button id="like-song" data-id="{{ song.id }}">Like</button>
+            <button id="save-song" data-id="{{ song.id }}">Save</button>
+        {% endif %}
     </div>
 </div>
 
@@ -42,9 +43,50 @@
     <p><strong>Duration:</strong> {{ duration }}</p>
 
     <div class="tags">
-        {% for tag in tags %}
+        {% for tag in song.tags %}
             <span class="tag is-primary">{{ tag }}</span>
         {% endfor %}
     </div>
 </div>
+{% block custom_js %}
+<script>
+    // Handle Like button
+    document.getElementById("like-song")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'song';
+
+        fetch(`/like/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Handle Save button
+    document.getElementById("save-song")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'song';
+
+        fetch(`/save/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}
 {% endblock %}

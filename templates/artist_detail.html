@@ -94,6 +94,13 @@ ul {
         <div class="artist-details">
             <h1 class="artist-name">{{ artist_name }}</h1>
         </div>
+        <div class="buttons">
+            {% if current_user.is_authenticated %}
+                <button id="like-artist" data-id="{{ artist.id }}">Like</button>
+                <button id="save-artist" data-id="{{ artist.id }}">Save</button>
+            {% endif %}
+
+        </div>
     </div>
 
     <!-- Album List -->

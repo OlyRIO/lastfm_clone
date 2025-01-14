@@ -1,0 +1,95 @@
+<!-- Liked Songs -->
+<div class="liked-section">
+    <h2>Liked Songs</h2>
+    <ul>
+        {% if liked_songs %}
+            {% for song in liked_songs %}
+            <li class="item">
+                {{ song.id }} 
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No liked songs yet.</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Saved Songs -->
+<div class="saved-section">
+    <h2>Saved Songs</h2>
+    <ul>
+        {% if saved_songs %}
+            {% for song in saved_songs %}
+            <li class="item">
+                {{ song.id }} b
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No saved songs yet.</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Liked Albums -->
+<div class="liked-section">
+    <h2>Liked Albums</h2>
+    <ul>
+        {% if liked_albums %}
+            {% for album in liked_albums %}
+            <li class="item">
+                {{ album.id }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No liked albums yet.</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Saved Albums -->
+<div class="saved-section">
+    <h2>Saved Albums</h2>
+    <ul>
+        {% if saved_albums %}
+            {% for album in saved_albums %}
+            <li class="item">
+                {{ album.id }} 
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No saved albums yet.</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Liked Artists -->
+<div class="liked-section">
+    <h2>Liked Artists</h2>
+    <ul>
+        {% if liked_artists %}
+            {% for artist in liked_artists %}
+            <li class="item">
+                {{ artist.name }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No liked artists yet.</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- Saved Artists -->
+<div class="saved-section">
+    <h2>Saved Artists</h2>
+    <ul>
+        {% if saved_artists %}
+            {% for artist in saved_artists %}
+            <li class="item">
+                {{ artist.name }}
+            </li>
+            {% endfor %}
+        {% else %}
+            <li class="item">No saved artists yet.</li>
+        {% endif %}
+    </ul>
+</div>

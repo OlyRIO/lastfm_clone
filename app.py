@@ -126,8 +126,6 @@ def save_item(item_type, item_id):
 def profile_view():
     # Fetch liked and saved songs
     user = User.get(current_user.id)
-    # liked_songs = users_collection.find({"_id": {"$in": current_user.liked_songs}})
-    # saved_songs = users_collection.find({"_id": {"$in": current_user.saved_songs}})
     
     for song in user.liked_songs:
         print(f"Song:\n {song}")
@@ -135,17 +133,6 @@ def profile_view():
     print(f"User collection: {users_collection}")
     print(f"Current user id: {user.id}")
     print(f"Current user username: {current_user.username}")
-    
-    print(f"Liked songs: {user.liked_songs}")
-    # print(f"Saved songs: {saved_songs}")
-    
-    # Fetch liked and saved albums
-    liked_albums = users_collection.find({"_id": {"$in": current_user.liked_albums}})
-    saved_albums = users_collection.find({"_id": {"$in": current_user.saved_albums}})
-    
-    # Fetch liked and saved artists
-    liked_artists = users_collection.find({"_id": {"$in": current_user.liked_artists}})
-    saved_artists = users_collection.find({"_id": {"$in": current_user.saved_artists}})
     
     return render_template(
         "profile.html",

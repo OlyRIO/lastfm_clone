@@ -10,6 +10,7 @@ from bson import ObjectId
 from models.Artist import Artist
 from models.Album import Album
 from models.Song import Song
+from models.User import User
 
 
 mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
@@ -124,8 +125,19 @@ def save_item(item_type, item_id):
 @login_required
 def profile_view():
     # Fetch liked and saved songs
-    liked_songs = users_collection.find({"_id": {"$in": current_user.liked_songs}})
-    saved_songs = users_collection.find({"_id": {"$in": current_user.saved_songs}})
+    user = User.get(current_user.id)
+    # liked_songs = users_collection.find({"_id": {"$in": current_user.liked_songs}})
+    # saved_songs = users_collection.find({"_id": {"$in": current_user.saved_songs}})
+    
+    for song in user.liked_songs:
+        print(f"Song:\n {song}")
+    
+    print(f"User collection: {users_collection}")
+    print(f"Current user id: {user.id}")
+    print(f"Current user username: {current_user.username}")
+    
+    print(f"Liked songs: {user.liked_songs}")
+    # print(f"Saved songs: {saved_songs}")
     
     # Fetch liked and saved albums
     liked_albums = users_collection.find({"_id": {"$in": current_user.liked_albums}})
@@ -138,12 +150,12 @@ def profile_view():
     return render_template(
         "profile.html",
         username=current_user.username,
-        liked_songs=list(liked_songs),
-        saved_songs=list(saved_songs),
-        liked_albums=list(liked_albums),
-        saved_albums=list(saved_albums),
-        liked_artists=list(liked_artists),
-        saved_artists=list(saved_artists),
+        liked_songs=list(user.liked_songs),
+        saved_songs=list(user.saved_songs),
+        liked_albums=list(user.liked_albums),
+        saved_albums=list(user.saved_albums),
+        liked_artists=list(user.liked_artists),
+        saved_artists=list(user.saved_artists),
     )
 
 

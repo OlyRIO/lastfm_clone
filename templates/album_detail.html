@@ -96,6 +96,13 @@ ul {
             <p class="album-artist">By {{ artist_name }}</p>
             <p class="album-release">Released: {{ release_date }}</p>
         </div>
+        <div class="buttons">
+            {% if current_user.is_authenticated %}
+                <button id="like-album" data-id="{{ album.id }}">Like</button>
+                <button id="save-album" data-id="{{ album.id }}">Save</button>
+            {% endif %}
+
+        </div>
     </div>
 
     <!-- Songs List -->

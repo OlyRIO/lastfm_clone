@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, flash, jsonify, request, session
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required, current_user
 from db_helper import *
 from data_generator import generate_spotify_data
 import config
@@ -71,6 +71,7 @@ def song_detail(song_id):
     song = song_data["song"]
     
     return render_template('song_detail.html', 
+                           song=song,
                            artist = song_data["artist"],
                            album = song_data["album"],
                            scrobbles = song["scrobbles"],
@@ -88,6 +89,7 @@ def album_view(album_id):
 
     return render_template(
         "album_detail.html",
+        album=album,
         album_title=album["title"],
         artist_name= album_data["artist"],
         release_date=album["release_date"],
@@ -101,10 +103,51 @@ def artist_view(artist_id):
     
     return render_template(
         "artist_detail.html",
+        artist=artist,
         artist_name=artist.name,
         albums=artist.albums,
     )
 
+@app.route('/like/<item_type>/<item_id>', methods=['POST'])
+@login_required
+def like_item(item_type, item_id):
+    current_user.like_item(item_type, item_id)
+    return jsonify({"message": f"Successfully liked {item_type} with ID {item_id}"}), 200
+
+@app.route('/save/<item_type>/<item_id>', methods=['POST'])
+@login_required
+def save_item(item_type, item_id):
+    current_user.save_item(item_type, item_id)
+    return jsonify({"message": f"Successfully saved {item_type} with ID {item_id}"}), 200
+
+@app.route('/profile')
+@login_required
+def profile_view():
+    # Fetch liked and saved songs
+    liked_songs = users_collection.find({"_id": {"$in": current_user.liked_songs}})
+    saved_songs = users_collection.find({"_id": {"$in": current_user.saved_songs}})
+    
+    # Fetch liked and saved albums
+    liked_albums = users_collection.find({"_id": {"$in": current_user.liked_albums}})
+    saved_albums = users_collection.find({"_id": {"$in": current_user.saved_albums}})
+    
+    # Fetch liked and saved artists
+    liked_artists = users_collection.find({"_id": {"$in": current_user.liked_artists}})
+    saved_artists = users_collection.find({"_id": {"$in": current_user.saved_artists}})
+    
+    return render_template(
+        "profile.html",
+        username=current_user.username,
+        liked_songs=list(liked_songs),
+        saved_songs=list(saved_songs),
+        liked_albums=list(liked_albums),
+        saved_albums=list(saved_albums),
+        liked_artists=list(liked_artists),
+        saved_artists=list(saved_artists),
+    )
+
+
+    
 
 
 if __name__ == "__main__":

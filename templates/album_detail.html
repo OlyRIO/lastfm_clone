@@ -101,7 +101,6 @@ ul {
                 <button id="like-album" data-id="{{ album.id }}">Like</button>
                 <button id="save-album" data-id="{{ album.id }}">Save</button>
             {% endif %}
-
         </div>
     </div>
 
@@ -113,7 +112,7 @@ ul {
             <li class="song-item">
                 <div class="song-details">
                     <span class="song-number">{{ loop.index }}.</span>
-                    <a href="/song/{{song.id}}" class="result-link">
+                    <a href="/song/{{ song.id }}" class="result-link">
                         <span class="song-title">{{ song.title }}</span>
                     </a>
                 </div>
@@ -125,4 +124,47 @@ ul {
         </ul>
     </div>
 </div>
+
+
+{% block custom_js %}
+<script>
+    // Handle Like button
+    document.getElementById("like-album")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'album';
+
+        fetch(`/like/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Handle Save button
+    document.getElementById("save-album")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'album';
+
+        fetch(`/save/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}
 {% endblock %}

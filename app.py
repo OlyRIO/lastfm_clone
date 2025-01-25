@@ -10,6 +10,7 @@ from bson import ObjectId
 from models.Artist import Artist
 from models.Album import Album
 from models.Song import Song
+from models.User import User
 
 
 mongo_uri = f"mongodb+srv://{config.DB_USER}:{config.DB_PASS}@lastfmclone.8ogsa.mongodb.net/"
@@ -123,28 +124,76 @@ def save_item(item_type, item_id):
 @app.route('/profile')
 @login_required
 def profile_view():
-    # Fetch liked and saved songs
-    liked_songs = users_collection.find({"_id": {"$in": current_user.liked_songs}})
-    saved_songs = users_collection.find({"_id": {"$in": current_user.saved_songs}})
+    # Fetch user and their liked/saved items
+    user = User.get(current_user.id)
     
-    # Fetch liked and saved albums
-    liked_albums = users_collection.find({"_id": {"$in": current_user.liked_albums}})
-    saved_albums = users_collection.find({"_id": {"$in": current_user.saved_albums}})
-    
-    # Fetch liked and saved artists
-    liked_artists = users_collection.find({"_id": {"$in": current_user.liked_artists}})
-    saved_artists = users_collection.find({"_id": {"$in": current_user.saved_artists}})
-    
+    # Initialize empty lists to hold detailed data
+    liked_songs_details = []
+    saved_songs_details = []
+    liked_albums_details = []
+    saved_albums_details = []
+    liked_artists_details = []
+    saved_artists_details = []
+
+    # Fetch detailed information for liked songs
+    for song_id in user.liked_songs:
+        song_details = Song.get(song_id)
+        if song_details:  # Only append if the song exists
+            liked_songs_details.append(song_details)
+
+    # Fetch detailed information for saved songs
+    for song_id in user.saved_songs:
+        song_details = Song.get(song_id)
+        if song_details:  # Only append if the song exists
+            saved_songs_details.append(song_details)
+
+    # Fetch detailed information for liked albums
+    for album_id in user.liked_albums:
+        album_details = Album.get(album_id)
+        if album_details:  # Only append if the album exists
+            liked_albums_details.append(album_details)
+
+    # Fetch detailed information for saved albums
+    for album_id in user.saved_albums:
+        album_details = Album.get(album_id)
+        if album_details:  # Only append if the album exists
+            saved_albums_details.append(album_details)
+
+    # Fetch detailed information for liked artists
+    for artist_id in user.liked_artists:
+        artist_details = Artist.get(artist_id)
+        if artist_details:  # Only append if the artist exists
+            liked_artists_details.append(artist_details)
+
+    # Fetch detailed information for saved artists
+    for artist_id in user.saved_artists:
+        artist_details = Artist.get(artist_id)
+        if artist_details:  # Only append if the artist exists
+            saved_artists_details.append(artist_details)
+
+    # Debugging output
+    print(f"Liked Songs Details: {liked_songs_details}")
+    print(f"Saved Songs Details: {saved_songs_details}")
+    print(f"Liked Albums Details: {liked_albums_details}")
+    print(f"Saved Albums Details: {saved_albums_details}")
+    print(f"Liked Artists Details: {liked_artists_details}")
+    print(f"Saved Artists Details: {saved_artists_details}")
+    print(f"Current user ID: {user.id}")
+    print(f"Current user username: {current_user.username}")
+
+    # Render profile.html with detailed data
     return render_template(
         "profile.html",
         username=current_user.username,
-        liked_songs=list(liked_songs),
-        saved_songs=list(saved_songs),
-        liked_albums=list(liked_albums),
-        saved_albums=list(saved_albums),
-        liked_artists=list(liked_artists),
-        saved_artists=list(saved_artists),
+        liked_songs=liked_songs_details,  # Pass detailed liked songs
+        saved_songs=saved_songs_details,  # Pass detailed saved songs
+        liked_albums=liked_albums_details,  # Pass detailed liked albums
+        saved_albums=saved_albums_details,  # Pass detailed saved albums
+        liked_artists=liked_artists_details,  # Pass detailed liked artists
+        saved_artists=saved_artists_details,  # Pass detailed saved artists
     )
+
+
 
 
     

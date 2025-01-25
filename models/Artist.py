@@ -12,7 +12,8 @@ class Artist():
 
     @staticmethod
     def get(user_id):
-        artist_data = artists_collection.find_one({"_id": user_id})
+        artist_data = artists_collection.find_one({"id": user_id})
+        
         
         if artist_data:
             return Artist(

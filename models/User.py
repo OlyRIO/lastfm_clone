@@ -9,7 +9,7 @@ class User(UserMixin):
         self.id = id
         self.username = username
         self.password = password
-        self.liked_artists = liked_artists or []
+        self.liked_artists = liked_artists or []  # Ensure liked_artists is always a list
         self.liked_albums = liked_albums or []
         self.liked_songs = liked_songs or []
         self.saved_artists = saved_artists or []
@@ -18,6 +18,9 @@ class User(UserMixin):
 
     @staticmethod
     def get(user_id):
+        """
+        Fetch the user data from MongoDB and return a User object.
+        """
         user_data = users_collection.find_one({"_id": ObjectId(user_id)})
         
         if user_data:
@@ -27,7 +30,7 @@ class User(UserMixin):
                 password=user_data["password"],
                 liked_artists=user_data.get("liked_artists", []),
                 liked_albums=user_data.get("liked_albums", []),
-                liked_songs=user_data.get("liked_songs", []),
+                liked_songs=user_data.get("liked_songs", []),  # Fetch as a simple list
                 saved_artists=user_data.get("saved_artists", []),
                 saved_albums=user_data.get("saved_albums", []),
                 saved_songs=user_data.get("saved_songs", [])
@@ -38,16 +41,29 @@ class User(UserMixin):
         return self.id
 
     def like_item(self, item_type, item_id):
+        """
+        Add an item to the liked list for the given type (e.g., songs, albums).
+        """
         field = f"liked_{item_type}s"
+        # Update the list in the database using $addToSet to prevent duplicates
         users_collection.update_one(
             {"_id": ObjectId(self.id)},
-            {"$addToSet": {field: item_id}}
+            {"$addToSet": {field: item_id}}  # Add item directly to the array
         )
+        # Update the in-memory object
+        if item_id not in getattr(self, field):
+            getattr(self, field).append(item_id)
 
     def save_item(self, item_type, item_id):
+        """
+        Add an item to the saved list for the given type (e.g., songs, albums).
+        """
         field = f"saved_{item_type}s"
+        # Update the list in the database using $addToSet to prevent duplicates
         users_collection.update_one(
             {"_id": ObjectId(self.id)},
-            {"$addToSet": {field: item_id}}
+            {"$addToSet": {field: item_id}}  # Add item directly to the array
         )
-
+        # Update the in-memory object
+        if item_id not in getattr(self, field):
+            getattr(self, field).append(item_id)

@@ -6,7 +6,7 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background:  #3b3b3b;
+    background: #3b3b3b;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -28,25 +28,13 @@
     flex: 1;
 }
 
-.artist-title {
+.artist-name {
     font-size: 2rem;
     margin: 0;
 }
 
-.artist-artist, .artist-release {
-    font-size: 1rem;
-    color: #666;
-}
-
 .item-list {
     margin-top: 20px;
-}
-
-.item-list h2 {
-    margin-bottom: 10px;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 5px;
 }
 
 ul {
@@ -55,8 +43,6 @@ ul {
 }
 
 .item {
-    display: flex;
-    justify-content: space-between;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
@@ -64,33 +50,14 @@ ul {
 .item:last-child {
     border-bottom: none;
 }
-
-.song-details {
-    display: flex;
-    align-items: center;
-}
-
-.song-number {
-    font-weight: bold;
-    margin-right: 10px;
-}
-
-.song-title {
-    font-size: 1rem;
-}
-
-.song-metadata {
-    font-size: 0.9rem;
-    color: #666;
-}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="artist-container">
-    <!-- artist Header -->
+    <!-- Artist Header -->
     <div class="artist-header">
-        <img src="{{ artist_cover_url }}" alt="artist Cover" class="artist-cover">
+        <img src="{{ artist_cover_url }}" alt="Artist Cover" class="artist-cover">
         <div class="artist-details">
             <h1 class="artist-name">{{ artist_name }}</h1>
         </div>
@@ -99,51 +66,61 @@ ul {
                 <button id="like-artist" data-id="{{ artist.id }}">Like</button>
                 <button id="save-artist" data-id="{{ artist.id }}">Save</button>
             {% endif %}
-
         </div>
     </div>
 
-    <!-- Album List -->
+    <!-- Albums List -->
     <div class="item-list">
         <h2>Albums</h2>
         <ul>
             {% for album in albums %}
             <li class="item">
-                <div class="album-details">
-                    <span class="album-number">{{ loop.index }}.</span>
-                    <a href="/album/{{album.id}}">
-                        <span class="album-title">{{ album.title }}</span>
-                    </a>
-                </div>
-                <div class="album-metadata">
-                    <span class="album-release-date">{{ album.release_date }}</span>
-                </div>
+                <a href="/album/{{ album.id }}">{{ album.title }}</a>
             </li>
             {% endfor %}
         </ul>
     </div>
-
-    <!-- Songs List -->
-    <div class="item-list">
-        <h2>Tracks</h2>
-        <ul>
-            {% for album in albums %}
-                {% for song in album.songs %}
-                <li class="item">
-                    <div class="song-details">
-                        <span class="song-number">{{ loop.index }}.</span>
-                        <a href="/song/{{song.id}}">
-                            <span class="song-title">{{ song.title }}</span>
-                        </a>
-                    </div>
-                    <div class="song-metadata">
-                        <span class="song-duration">{{ song.duration }}</span>
-                    </div>
-                </li>
-                {% endfor %}
-            {% endfor %}
-            
-        </ul>
-    </div>
 </div>
+
+{% block custom_js %}
+<script>
+    // Handle Like button for Artist
+    document.getElementById("like-artist")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'artist';
+
+        fetch(`/like/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    // Handle Save button for Artist
+    document.getElementById("save-artist")?.addEventListener("click", function(e) {
+        e.preventDefault();
+        var item_id = this.dataset.id;
+        var item_type = 'artist';
+
+        fetch(`/save/${item_type}/${item_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message); // Show success message
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}
 {% endblock %}

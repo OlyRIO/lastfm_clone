@@ -4,37 +4,62 @@
 <style>
 .artist-container {
     max-width: 800px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
     background: #3b3b3b;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .artist-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.artist-cover {
-    width: 150px;
-    height: 150px;
-    border-radius: 5px;
-    margin-right: 20px;
+.artist-info {
+    display: flex;
+    align-items: center;
 }
 
-.artist-details {
-    flex: 1;
+.artist-cover {
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+    margin-right: 20px;
 }
 
 .artist-name {
     font-size: 2rem;
-    margin: 0;
+    color: #fff;
 }
 
-.item-list {
-    margin-top: 20px;
+.buttons button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttons button:hover {
+    background: #0056b3;
+}
+
+.section {
+    background: #2c2c2c;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.section h2 {
+    color: #fff;
+    margin-bottom: 10px;
 }
 
 ul {
@@ -44,33 +69,60 @@ ul {
 
 .item {
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #444;
+    transition: 0.3s;
 }
 
 .item:last-child {
     border-bottom: none;
+}
+
+.item a {
+    text-decoration: none;
+    color: #4da6ff;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.item a:hover {
+    color: #80caff;
+}
+
+.floating-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.5s ease-in-out;
+}
+
+.alert-danger {
+    background-color: #dc3545;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="artist-container">
-    <!-- Artist Header -->
     <div class="artist-header">
-        <img src="{{ artist_cover_url }}" alt="Artist Cover" class="artist-cover">
-        <div class="artist-details">
+        <div class="artist-info">
+            <img src="{{ artist_cover_url }}" alt="Artist Cover" class="artist-cover">
             <h1 class="artist-name">{{ artist_name }}</h1>
         </div>
         <div class="buttons">
             {% if current_user.is_authenticated %}
-                <button id="like-artist" data-id="{{ artist.id }}">Like</button>
-                <button id="save-artist" data-id="{{ artist.id }}">Save</button>
+                <button id="like-artist" data-id="{{ artist.id }}">❤️ Like</button>
+                <button id="save-artist" data-id="{{ artist.id }}">💾 Save</button>
             {% endif %}
         </div>
     </div>
 
-    <!-- Albums List -->
-    <div class="item-list">
+    <div class="section">
         <h2>Albums</h2>
         <ul>
             {% for album in albums %}
@@ -84,42 +136,37 @@ ul {
 
 {% block custom_js %}
 <script>
-    // Handle Like button for Artist
+    function showNotification(message, type = "success") {
+        let notification = document.createElement("div");
+        notification.className = `alert alert-${type} floating-notification`;
+        notification.innerText = message;
+        
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = "0";
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    }
+
     document.getElementById("like-artist")?.addEventListener("click", function(e) {
         e.preventDefault();
         var item_id = this.dataset.id;
-        var item_type = 'artist';
 
-        fetch(`/like/${item_type}/${item_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        fetch(`/like/artist/${item_id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
         .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Show success message
-        })
-        .catch(error => console.error('Error:', error));
+        .then(data => showNotification(data.message, "success"))
+        .catch(error => showNotification("Error occurred", "danger"));
     });
 
-    // Handle Save button for Artist
     document.getElementById("save-artist")?.addEventListener("click", function(e) {
         e.preventDefault();
         var item_id = this.dataset.id;
-        var item_type = 'artist';
 
-        fetch(`/save/${item_type}/${item_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        fetch(`/save/artist/${item_id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
         .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Show success message
-        })
-        .catch(error => console.error('Error:', error));
+        .then(data => showNotification(data.message, "success"))
+        .catch(error => showNotification("Error occurred", "danger"));
     });
 </script>
 {% endblock %}

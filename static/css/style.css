@@ -1,27 +1,80 @@
-h1 {
-    border: 2px #eee solid;
-    color: brown;
-    text-align: center;
-    padding: 10px;
-}
-
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    background-color: #2c2f36; /* Dark background for the body */
+    color: #fff; /* White text */
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    max-width: 1200px;
-    margin: 0 auto;
+/* Hero Section - Background and Styling */
+.hero.is-primary {
+    background-color: #1e2a47 !important; /* Dark blue background */
 }
 
-/* Upper Section Styling */
+.hero-body {
+    background-color: #3a3a3a !important; /* Lighter dark gray */
+    color: white !important;
+}
+
+.hero h1, .hero .title {
+    color: white !important;
+}
+
+/* Navbar Styling - Dark Gray with subtle hover effects */
+.navbar {
+    background-color: #333 !important; /* Dark Gray Navbar */
+    color: white !important;
+    border-bottom: 2px solid #444; /* Border to separate navbar */
+}
+
+.navbar-item {
+    color: white !important;
+}
+
+.navbar-item:hover {
+    background-color: #444 !important; /* Darker hover effect */
+}
+
+.navbar-start .navbar-item, .navbar-end .navbar-item {
+    color: white !important; /* Ensure navbar items are white */
+}
+
+.navbar-end .navbar-item .button {
+    color: white !important;
+}
+
+/* Button Styles */
+.button.is-primary {
+    background-color: #007bff !important; /* Primary Blue Button */
+    color: white !important;
+    border-radius: 5px;
+}
+
+.button.is-light {
+    background-color: #f5f5f5 !important; /* Light button for login */
+    color: #333 !important;
+    border-radius: 5px;
+}
+
+.button.is-info {
+    background-color: #0056b3 !important; /* Info button with a darker blue */
+    color: white !important;
+}
+
+.button.is-danger {
+    background-color: #e74c3c !important; /* Red logout button */
+    color: white !important;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+/* Upper Section Styling - Better Contrast */
 .upper-section {
-    background-color: #4a403e;
+    background-color: #4a403e; /* Dark Brown background */
     color: white;
     padding: 20px;
     display: flex;
@@ -32,19 +85,24 @@ body {
 .upper-section h1 {
     margin: 0;
     font-size: 2.5rem;
+    color: white; /* Make sure it's visible */
 }
 
 .upper-section button {
     padding: 10px 20px;
     font-size: 1rem;
-    background-color: white;
-    color: #4a403e;
+    background-color: #007bff; /* Blue for buttons */
+    color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
 }
 
-/* Lower Section Styling */
+.upper-section button:hover {
+    background-color: #0056b3; /* Hover color */
+}
+
+/* Lower Section Styling - Flex Grid and Visual Appeal */
 .lower-section {
     padding: 20px;
     display: grid;
@@ -81,9 +139,59 @@ body {
     border-radius: 10px;
 }
 
+/* Footer Styling */
 .footer {
     margin-top: 20px;
     font-size: 0.9rem;
     text-align: center;
     color: #555;
+}
+
+/* Notifications (Warning/Alerts) */
+.notification.is-warning {
+    background-color: #333;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.notification .delete {
+    color: white;
+}
+
+/* Hero Title and Subtitle */
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+}
+
+.hero .title {
+    font-size: 2rem;
+}
+
+/* Input Fields */
+.input {
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    color: #333;
+    background-color: #fff;
+}
+
+.input:focus {
+    border-color: #007bff; /* Blue border on focus */
+}
+
+.field.has-addons {
+    display: flex;
+}
+
+/* Form Input Buttons */
+.button.is-info {
+    background-color: #0056b3 !important; /* Info blue color */
+    color: white;
+}
+
+.button.is-info:hover {
+    background-color: #003c75;
 }

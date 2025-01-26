@@ -1,13 +1,101 @@
 {% extends 'base.html' %}
 
-{%  block custom_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/search.css') }}" />
+{% block custom_css %}
+<style>
+    .search-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #3b3b3b;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-title {
+        font-size: 2rem;
+        color: #fff;
+        margin-bottom: 20px;
+    }
+
+    .search-subtitle {
+        font-size: 1rem;
+        color: #bfbfbf;
+        margin-bottom: 30px;
+    }
+
+    .subtitle {
+        font-size: 1.5rem;
+        color: #fff;
+        margin-bottom: 15px;
+    }
+
+    .field {
+        margin-bottom: 20px;
+    }
+
+    .result-link {
+        text-decoration: none;
+        color: #fff;
+    }
+
+    .result-block {
+        display: flex;
+        align-items: center;
+        background: #2d2d2d;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-block p {
+        margin: 5px 0;
+    }
+
+    .name {
+        font-size: 1.2rem;
+        color: #fff;
+        margin-left: 10px;
+    }
+
+    .artist-info, .album-info, .song-info {
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+
+    .no-results {
+        color: #ff4d4d;
+        font-size: 1rem;
+    }
+
+    .button.is-info {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .button.is-info:hover {
+        background-color: #0056b3;
+    }
+
+    /* Ikonice */
+    .result-icon {
+        font-size: 2rem;
+        color: #fff;
+        margin-right: 20px;
+        flex-shrink: 0;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<section class="section search-container">
+<section class="search-container">
     <div class="container">
-        <h1 class="title search-title">Search Results</h1>
+        <h1 class="search-title">Search Results</h1>
         <p class="search-subtitle">Showing results for: <strong>{{ query }}</strong></p>
 
         <!-- Sortiranje za Umjetnike -->
@@ -22,9 +110,7 @@
                     </select>
                 </div>
                 <div class="control">
-                    <button class="button is-info" onclick="applySort('artists')">
-                        Sort Artists
-                    </button>
+                    <button class="button is-info" onclick="applySort('artists')">Sort Artists</button>
                 </div>
             </div>
         </div>
@@ -33,9 +119,12 @@
                 {% for artist in artists %}
                 <a href="/artist/{{ artist.id }}" class="result-link">
                     <div class="result-block">
-                        <p class="name"><strong>{{ artist.name }}</strong></p>
-                        <p class="artist-info"><strong>Genre:</strong> {{ artist.genre }}</p>
-                        <p class="artist-info"><strong>Followers:</strong> {{ artist.followers }}</p>
+                        <div class="result-icon">🎤</div>
+                        <div>
+                            <p class="name"><strong>{{ artist.name }}</strong></p>
+                            <p class="artist-info"><strong>Genre:</strong> {{ artist.genre }}</p>
+                            <p class="artist-info"><strong>Followers:</strong> {{ artist.followers }}</p>
+                        </div>
                     </div>
                 </a>
                 {% endfor %}
@@ -56,20 +145,21 @@
                     </select>
                 </div>
                 <div class="control">
-                    <button class="button is-info" onclick="applySort('albums')">
-                        Sort Albums
-                    </button>
+                    <button class="button is-info" onclick="applySort('albums')">Sort Albums</button>
                 </div>
             </div>
         </div>
         {% if albums %}
             <div class="albums">
                 {% for album in albums %}
-                <a href="/album/{{album.album.id}}" class="result-link">
+                <a href="/album/{{ album.album.id }}" class="result-link">
                     <div class="result-block">
-                        <p class="name"><strong> {{ album.album.title }}</strong></p>
-                        <p class="album-info"><strong>Artist:</strong> {{ album.artist_name }}</p>
-                        <p class="album-info"><strong>Release Date:</strong> {{ album.album.release_date }}</p>
+                        <div class="result-icon">💿</div>
+                        <div>
+                            <p class="name"><strong> {{ album.album.title }}</strong></p>
+                            <p class="album-info"><strong>Artist:</strong> {{ album.artist_name }}</p>
+                            <p class="album-info"><strong>Release Date:</strong> {{ album.album.release_date }}</p>
+                        </div>
                     </div>
                 </a>
                 {% endfor %}
@@ -90,21 +180,22 @@
                     </select>
                 </div>
                 <div class="control">
-                    <button class="button is-info" onclick="applySort('songs')">
-                        Sort Songs
-                    </button>
+                    <button class="button is-info" onclick="applySort('songs')">Sort Songs</button>
                 </div>
             </div>
         </div>
         {% if songs %}
             <div class="songs">
                 {% for song in songs %}
-                <a href="/song/{{song.song.id}}" class="result-link">
+                <a href="/song/{{ song.song.id }}" class="result-link">
                     <div class="result-block">
-                        <p class="name"><strong>{{ song.song.title }}</strong> </p>
-                        <p class="song-info"><strong>Duration:</strong> {{ song.song.duration // 60 }}:{{ song.song.duration % 60 }} mins</p>
-                        <p class="song-info"><strong>Album:</strong> {{ song.album_title }}</p>
-                        <p class="song-info"><strong>Artist:</strong> {{ song.artist_name }}</p>
+                        <div class="result-icon">🎵</div>
+                        <div>
+                            <p class="name"><strong>{{ song.song.title }}</strong></p>
+                            <p class="song-info"><strong>Duration:</strong> {{ song.song.duration // 60 }}:{{ song.song.duration % 60 }} mins</p>
+                            <p class="song-info"><strong>Album:</strong> {{ song.album_title }}</p>
+                            <p class="song-info"><strong>Artist:</strong> {{ song.artist_name }}</p>
+                        </div>
                     </div>
                 </a>
                 {% endfor %}

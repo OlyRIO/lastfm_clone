@@ -3,50 +3,63 @@
 {% block custom_css %}
 <style>
 .album-container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 900px;
+    margin: 20px auto;
     padding: 20px;
-    background:  #3b3b3b;
+    background: #3b3b3b;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .album-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
+}
+
+.album-info {
+    display: flex;
+    align-items: center;
 }
 
 .album-cover {
     width: 150px;
     height: 150px;
-    border-radius: 5px;
+    border-radius: 10px;
     margin-right: 20px;
-}
-
-.album-details {
-    flex: 1;
 }
 
 .album-title {
     font-size: 2rem;
-    margin: 0;
+    color: #fff;
 }
 
-.album-artist, .album-release {
-    font-size: 1rem;
-    color: #666;
+.buttons button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.songs-list {
-    margin-top: 20px;
+.buttons button:hover {
+    background: #0056b3;
 }
 
-.songs-list h2 {
+.section {
+    background: #2c2c2c;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.section h2 {
+    color: #fff;
     margin-bottom: 10px;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 5px;
 }
 
 ul {
@@ -55,115 +68,109 @@ ul {
 }
 
 .song-item {
-    display: flex;
-    justify-content: space-between;
     padding: 10px;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #444;
+    transition: 0.3s;
 }
 
 .song-item:last-child {
     border-bottom: none;
 }
 
-.song-details {
-    display: flex;
-    align-items: center;
-}
-
-.song-number {
+.song-item a {
+    text-decoration: none;
+    color: #4da6ff;
     font-weight: bold;
-    margin-right: 10px;
+    transition: 0.3s;
 }
 
-.song-title {
-    font-size: 1rem;
+.song-item a:hover {
+    color: #80caff;
 }
 
-.song-metadata {
-    font-size: 0.9rem;
-    color: #666;
+.floating-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.5s ease-in-out;
+}
+
+.alert-danger {
+    background-color: #dc3545;
 }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="album-container">
-    <!-- Album Header -->
     <div class="album-header">
-        <img src="{{ album_cover_url }}" alt="Album Cover" class="album-cover">
-        <div class="album-details">
+        <div class="album-info">
+            <img src="{{ album_cover_url }}" alt="Album Cover" class="album-cover">
             <h1 class="album-title">{{ album_title }}</h1>
-            <p class="album-artist">By {{ artist_name }}</p>
-            <p class="album-release">Released: {{ release_date }}</p>
         </div>
         <div class="buttons">
             {% if current_user.is_authenticated %}
-                <button id="like-album" data-id="{{ album.id }}">Like</button>
-                <button id="save-album" data-id="{{ album.id }}">Save</button>
+                <button id="like-album" data-id="{{ album.id }}">❤️ Like</button>
+                <button id="save-album" data-id="{{ album.id }}">💾 Save</button>
             {% endif %}
         </div>
     </div>
 
-    <!-- Songs List -->
-    <div class="songs-list">
+    <div class ="album-artist">
+        <p></p>
+    </div>
+
+    <div class="section">
         <h2>Tracks</h2>
         <ul>
             {% for song in songs %}
             <li class="song-item">
-                <div class="song-details">
-                    <span class="song-number">{{ loop.index }}.</span>
-                    <a href="/song/{{ song.id }}" class="result-link">
-                        <span class="song-title">{{ song.title }}</span>
-                    </a>
-                </div>
-                <div class="song-metadata">
-                    <span class="song-duration">{{ song.duration }}</span>
-                </div>
+                <a href="/song/{{ song.id }}">{{ song.title }}</a>
             </li>
             {% endfor %}
         </ul>
     </div>
 </div>
 
-
 {% block custom_js %}
 <script>
-    // Handle Like button
+    function showNotification(message, type = "success") {
+        let notification = document.createElement("div");
+        notification.className = `alert alert-${type} floating-notification`;
+        notification.innerText = message;
+        
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = "0";
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    }
+
     document.getElementById("like-album")?.addEventListener("click", function(e) {
         e.preventDefault();
         var item_id = this.dataset.id;
-        var item_type = 'album';
 
-        fetch(`/like/${item_type}/${item_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        fetch(`/like/album/${item_id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
         .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Show success message
-        })
-        .catch(error => console.error('Error:', error));
+        .then(data => showNotification(data.message, "success"))
+        .catch(error => showNotification("Error occurred", "danger"));
     });
 
-    // Handle Save button
     document.getElementById("save-album")?.addEventListener("click", function(e) {
         e.preventDefault();
         var item_id = this.dataset.id;
-        var item_type = 'album';
 
-        fetch(`/save/${item_type}/${item_id}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+        fetch(`/save/album/${item_id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' } })
         .then(response => response.json())
-        .then(data => {
-            alert(data.message); // Show success message
-        })
-        .catch(error => console.error('Error:', error));
+        .then(data => showNotification(data.message, "success"))
+        .catch(error => showNotification("Error occurred", "danger"));
     });
 </script>
 {% endblock %}

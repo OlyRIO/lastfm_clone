@@ -27,14 +27,8 @@
                             <a href="{{ url_for('populate_data') }}" class="navbar-item">
                                 Populate DB
                             </a>
-                            <a href="{{ url_for('get_users') }}" class="navbar-item">
-                                Get Artists
-                            </a>
                             <a href="{{ url_for('create') }}" class="navbar-item">
                                 Add Artist
-                            </a>
-                            <a href="{{ url_for('dropdb') }}" class="navbar-item">
-                                Drop DB
                             </a>
                         </div>
                         
@@ -61,6 +55,10 @@
                                     {% if current_user.is_authenticated %}
                                     <!-- Greeting message for logged-in users -->
                                     <span class="navbar-item">Hello, {{ current_user.username }}!</span>
+                                    <!-- Profile button for logged-in users -->
+                                    <a class ="button is-primary" href="{{ url_for('profile_view') }}" class="navbar-item">
+                                        Profile
+                                    </a>
                                     <!-- Logout button for logged-in users -->
                                     <a class="button is-danger" href="{{ url_for('auth.logout') }}">
                                         Log out

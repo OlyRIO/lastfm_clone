@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   # Define the Traefik service
   traefik:
